@@ -351,7 +351,7 @@ searchInput.addEventListener('input', function(e) {
 function showHome() {
     mainContent.innerHTML = `
         <div style="max-width:700px; margin: 0 auto; text-align: center; padding: 2rem 0;">
-            <h2 style="color:#2e7d32;">🍅 Tomato Plant Diseases teste</h2>
+            <h2 style="color:#2e7d32;">🍅 Tomato Plant Diseases</h2>
             <p style="font-size:1.2rem; color:#475569; margin-top:1rem;">
                 Selecione uma categoria no menu lateral para explorar as fichas técnicas.
             </p>
