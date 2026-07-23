@@ -1,15 +1,49 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Meu Site</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tomato Plant Diseases · Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
-<h1>Olá Mundo!</h1>
+    <!-- ===== CABEÇALHO / BANNER ===== -->
+    <header class="banner" style="background-image: url('https://placehold.co/1200x300/2e7d32/ffffff?text=Tomato+Plant+Diseases');">
+        <div class="banner-content">
+            <h1>🍅 Tomato Plant Diseases</h1>
+            <p>Guia técnico para identificação e manejo de doenças do tomateiro</p>
+        </div>
+    </header>
 
-<p>Meu primeiro site no GitHub Pages.</p>
+    <div class="app-wrapper">
 
+        <!-- ===== MENU LATERAL ===== -->
+        <nav class="sidebar" id="sidebar">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Buscar por nome científico...">
+            </div>
+            <ul class="menu" id="menuContainer">
+                <!-- Os itens do menu serão gerados pelo JavaScript -->
+            </ul>
+        </nav>
+
+        <!-- ===== ÁREA PRINCIPAL ===== -->
+        <main class="main-content" id="mainContent">
+            <!-- O conteúdo será injetado via JavaScript -->
+        </main>
+
+    </div>
+
+    <!-- ===== LIGHTBOX ===== -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="close-lightbox">&times;</span>
+        <img class="lightbox-img" id="lightboxImg" src="" alt="Ampliada">
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>

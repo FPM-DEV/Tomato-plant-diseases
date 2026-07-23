@@ -1,0 +1,50 @@
+[
+    {
+        "id": "alternaria_linariae",
+        "scientific_name": "Alternaria linariae",
+        "common_name": "Early blight",
+        "images": ["alternaria_1.jpg", "alternaria_2.jpg", "alternaria_3.jpg"],
+        "symptoms": [
+            "Lesões necróticas castanho-escuras nas folhas mais velhas, com anéis concêntricos.",
+            "Manchas com halo amarelado.",
+            "Murcha e queda das folhas inferiores."
+        ],
+        "signs": [
+            "Esporulação escura (conídios) no centro das lesões em condições de umidade."
+        ],
+        "etiology": "Fungo Alternaria linariae (sin. A. solani), anamorfo de Pleospora.",
+        "disease_cycle": "Sobrevive em restos de cultura e sementes. Conídios dispersos pelo vento e água.",
+        "epidemiology": "Temperaturas entre 24-29°C e alta umidade favorecem a infecção.",
+        "management": [
+            "Rotação de culturas (evitar solanáceas por 2-3 anos).",
+            "Remoção de restos culturais.",
+            "Plantio de variedades resistentes.",
+            "Fungicidas preventivos (clorotalonil, mancozebe, etc.)."
+        ],
+        "references": [
+            "Jones, J.B. et al. (2016). Compendium of Tomato Diseases.",
+            "Agrios, G.N. (2005). Plant Pathology."
+        ]
+    },
+    {
+        "id": "septoria_lycopersici",
+        "scientific_name": "Septoria lycopersici",
+        "common_name": "Septoria leaf spot",
+        "images": ["septoria_1.jpg", "septoria_2.jpg"],
+        "symptoms": [
+            "Pequenas manchas circulares com centro cinza e borda escura.",
+            "Queda prematura das folhas."
+        ],
+        "signs": [
+            "Corpos de frutificação (picnídios) negros visíveis no centro das lesões."
+        ],
+        "etiology": "Fungo Septoria lycopersici.",
+        "disease_cycle": "Sobrevive em sementes e restos de cultura. Esporos disseminados por respingos de chuva.",
+        "management": [
+            "Rotação de culturas.",
+            "Fungicidas à base de cobre ou mancozebe.",
+            "Evitar irrigação por aspersão."
+        ],
+        "references": ["Jones et al. (2016). Compendium of Tomato Diseases."]
+    }
+]
