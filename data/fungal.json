@@ -33,6 +33,7 @@
     "images": ["septoria_1.png", "septoria_2.png", "septoria_3.png"],
     "symptoms": [
         "Pequenas manchas circulares com centro cinza e borda escura.",
+        "Ataca folhas e caules",
         "Queda prematura das folhas."
     ],
     "signs": [
@@ -41,10 +42,16 @@
     "etiology": "Fungo Septoria lycopersici.",
     "disease_cycle": "Sobrevive em sementes e restos de cultura. Esporos disseminados por respingos de chuva.",
     "management": [
-        "Rotação de culturas.",
-        "Fungicidas à base de cobre ou mancozebe.",
-        "Evitar irrigação por aspersão."
+        "Evitar irrigação por aspersão.",
+        "Fungicidas à base mancozebe, fluxapiroxade + piraclostrobina, difenoconazol, clorotalonil, propineb e metiram + piraclostrobina."
+        
     ],
-    "references": ["Jones et al. (2016). Compendium of Tomato Diseases."]
+    "references": [
+        "Monteiro, F. P., Ogoshi, C., Cardoso, D. A., Perazzoli, V., Maindra, L. C., Pinto, F. A., Wamser, A. F. (2021). Fungicides in the control of septoriose in tomato plant. Plant Pathology & Quarantine, 11(1), 173-190.",
+        "Monteiro, F., Ogoshi, C., Maindra, L. C., & Becker, W. F. (2019). Culture medium based on tomato leaves for abundant production of conidia from Septoria lycopersici. Asian Journal of Agricultural and Horticultural Research, 3(1), 1-6.",
+        "Monteiro FP, Ogoshi C, Mallmann G 2023 – Chemical control of Septoria lycopersici in vitro as first screening for fungicide efficacy studies. Plant Pathology & Quarantine 13(1), 48–54.",
+        "Monteiro FP, Ogoshi C, Cardoso DA, Valdecir P, Pinto FAMF, Mallmann G 2021 – Development and validation of diagrammatic scales to assess septoriose in tomato. Plant Pathology & Quarantine 11(1), 115–124.", 
+        "Monteiro F. P., Ogoshi C., Mallmann G., Valmorbida J., and Wamser A. F. 2023. “ Exploring Alternative Products for Tomato Septoria Lycopersici Control”. Asian Journal of Agricultural and Horticultural Research 10 (4):496-506."
+]
     }
 ]
