@@ -27,24 +27,24 @@
         ]
     },
     {
-        "id": "septoria_lycopersici",
-        "scientific_name": "Septoria lycopersici",
-        "common_name": "Septoria leaf spot",
-        "images": ["septoria_1.jpg", "septoria_2.jpg"],
-        "symptoms": [
-            "Pequenas manchas circulares com centro cinza e borda escura.",
-            "Queda prematura das folhas."
-        ],
-        "signs": [
-            "Corpos de frutificação (picnídios) negros visíveis no centro das lesões."
-        ],
-        "etiology": "Fungo Septoria lycopersici.",
-        "disease_cycle": "Sobrevive em sementes e restos de cultura. Esporos disseminados por respingos de chuva.",
-        "management": [
-            "Rotação de culturas.",
-            "Fungicidas à base de cobre ou mancozebe.",
-            "Evitar irrigação por aspersão."
-        ],
-        "references": ["Jones et al. (2016). Compendium of Tomato Diseases."]
+    "id": "septoria_lycopersici",
+    "scientific_name": "Septoria lycopersici",
+    "common_name": "Septoria leaf spot",
+    "images": ["septoria_1.png", "septoria_2.png", "septoria_3.png"],
+    "symptoms": [
+        "Pequenas manchas circulares com centro cinza e borda escura.",
+        "Queda prematura das folhas."
+    ],
+    "signs": [
+        "Corpos de frutificação (picnídios) negros visíveis no centro das lesões."
+    ],
+    "etiology": "Fungo Septoria lycopersici.",
+    "disease_cycle": "Sobrevive em sementes e restos de cultura. Esporos disseminados por respingos de chuva.",
+    "management": [
+        "Rotação de culturas.",
+        "Fungicidas à base de cobre ou mancozebe.",
+        "Evitar irrigação por aspersão."
+    ],
+    "references": ["Jones et al. (2016). Compendium of Tomato Diseases."]
     }
 ]
