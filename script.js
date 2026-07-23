@@ -1,5 +1,5 @@
 // ============================================================
-//  script.js - Tomato Plant Diseases Portal
+//  script.js - Tomato Plant Diseases Portal (com subcategorias)
 // ============================================================
 
 // Mapeamento de categorias para arquivos JSON
@@ -12,18 +12,21 @@ const CATEGORIES = {
     postharvest: { label: 'Postharvest Diseases', icon: 'icons/postharvest.svg', file: 'data/postharvest.json' }
 };
 
+// Quais categorias têm subcategorias? (para tratamento especial)
+const CATEGORIES_WITH_SUB = ['physiological'];
+
 // Estado
 let allDiseases = {};       // { categoryKey: [doenças] }
 let currentCategory = null;
+let currentSubcategory = null;  // para quando estiver em uma subcategoria
 let currentDiseaseId = null;
 
-// DOM
 const menuContainer = document.getElementById('menuContainer');
 const mainContent = document.getElementById('mainContent');
 const searchInput = document.getElementById('searchInput');
 
 // ============================================================
-//  Carregar todos os JSONs
+//  Carregar dados
 // ============================================================
 async function loadAllData() {
     const promises = Object.entries(CATEGORIES).map(async ([key, cat]) => {
@@ -31,7 +34,7 @@ async function loadAllData() {
             const resp = await fetch(cat.file);
             if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
             const data = await resp.json();
-            allDiseases[key] = data;  // espera-se um array de doenças
+            allDiseases[key] = data;
         } catch (err) {
             console.warn(`Erro ao carregar ${cat.file}:`, err);
             allDiseases[key] = [];
@@ -39,17 +42,17 @@ async function loadAllData() {
     });
     await Promise.all(promises);
     buildMenu();
-    // Se houver busca na URL? Podemos carregar a primeira categoria por padrão
-    const firstCat = Object.keys(CATEGORIES)[0];
-    if (firstCat && allDiseases[firstCat]?.length) {
-        showCategory(firstCat);
+    // Abrir a primeira categoria por padrão (sem subcategorias)
+    const firstKey = Object.keys(CATEGORIES)[0];
+    if (firstKey && allDiseases[firstKey]?.length) {
+        showCategory(firstKey);
     } else {
         showHome();
     }
 }
 
 // ============================================================
-//  Construir menu lateral (com submenus recolhíveis)
+//  Construir menu com suporte a subcategorias
 // ============================================================
 function buildMenu() {
     menuContainer.innerHTML = '';
@@ -57,7 +60,7 @@ function buildMenu() {
         const diseases = allDiseases[key] || [];
         const li = document.createElement('li');
 
-        // Cabeçalho da categoria
+        // Cabeçalho da categoria principal
         const catDiv = document.createElement('div');
         catDiv.className = 'category';
         catDiv.dataset.category = key;
@@ -68,38 +71,95 @@ function buildMenu() {
         `;
         catDiv.addEventListener('click', () => toggleCategory(key, catDiv));
 
-        // Submenu
+        // Submenu (primeiro nível)
         const subUl = document.createElement('ul');
         subUl.className = 'submenu';
         subUl.dataset.category = key;
 
-        diseases.forEach(disease => {
-            const item = document.createElement('li');
-            item.textContent = disease.scientific_name || disease.name || 'Sem nome';
-            item.dataset.diseaseId = disease.id || disease.scientific_name;
-            item.dataset.category = key;
-            item.addEventListener('click', () => showDisease(key, disease));
-            subUl.appendChild(item);
-        });
+        if (CATEGORIES_WITH_SUB.includes(key)) {
+            // ---- Categoria com subcategorias ----
+            // Agrupar doenças por subcategory
+            const groups = {};
+            diseases.forEach(d => {
+                const sub = d.subcategory || 'Outros';
+                if (!groups[sub]) groups[sub] = [];
+                groups[sub].push(d);
+            });
+
+            for (const [subName, subDiseases] of Object.entries(groups)) {
+                const subLi = document.createElement('li');
+                // Cabeçalho da subcategoria
+                const subCatDiv = document.createElement('div');
+                subCatDiv.className = 'category subcategory'; // classe adicional para estilo
+                subCatDiv.dataset.subcategory = subName;
+                subCatDiv.dataset.category = key;
+                subCatDiv.innerHTML = `
+                    <span style="margin-left: 1.2rem;">📂</span>
+                    <span>${subName}</span>
+                    <span class="arrow">▶</span>
+                `;
+                subCatDiv.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleSubcategory(key, subName, subCatDiv);
+                });
+
+                // Submenu de doenças (segundo nível)
+                const subSubUl = document.createElement('ul');
+                subSubUl.className = 'submenu sub-submenu';
+                subSubUl.dataset.subcategory = subName;
+                subSubUl.dataset.category = key;
+
+                subDiseases.forEach(disease => {
+                    const item = document.createElement('li');
+                    item.textContent = disease.scientific_name || disease.name || 'Sem nome';
+                    item.dataset.diseaseId = disease.id || disease.scientific_name;
+                    item.dataset.category = key;
+                    item.dataset.subcategory = subName;
+                    item.addEventListener('click', () => showDisease(key, disease, subName));
+                    subSubUl.appendChild(item);
+                });
+
+                subLi.appendChild(subCatDiv);
+                subLi.appendChild(subSubUl);
+                subUl.appendChild(subLi);
+            }
+        } else {
+            // ---- Categoria sem subcategorias (comportamento original) ----
+            diseases.forEach(disease => {
+                const item = document.createElement('li');
+                item.textContent = disease.scientific_name || disease.name || 'Sem nome';
+                item.dataset.diseaseId = disease.id || disease.scientific_name;
+                item.dataset.category = key;
+                item.addEventListener('click', () => showDisease(key, disease, null));
+                subUl.appendChild(item);
+            });
+        }
 
         li.appendChild(catDiv);
         li.appendChild(subUl);
         menuContainer.appendChild(li);
     }
 
-    // Abrir a primeira categoria por padrão
+    // Abrir a primeira categoria (e sua primeira subcategoria, se houver)
     const firstKey = Object.keys(CATEGORIES)[0];
     if (firstKey) {
         const catDiv = menuContainer.querySelector(`.category[data-category="${firstKey}"]`);
-        if (catDiv) toggleCategory(firstKey, catDiv, true);
+        if (catDiv) {
+            toggleCategory(firstKey, catDiv, true);
+            // Se for physiological, abrir também a primeira subcategoria
+            if (CATEGORIES_WITH_SUB.includes(firstKey)) {
+                const firstSub = menuContainer.querySelector(`.subcategory[data-category="${firstKey}"]`);
+                if (firstSub) {
+                    toggleSubcategory(firstKey, firstSub.dataset.subcategory, firstSub, true);
+                }
+            }
+        }
     }
 }
 
-function getIconHTML(iconPath) {
-    // Se o arquivo SVG existir, usamos <img>, senão usamos emoji fallback
-    return `<img src="${iconPath}" alt="ícone" style="width:24px;height:24px;" onerror="this.style.display='none';">`;
-}
-
+// ============================================================
+//  Funções de toggle para categorias e subcategorias
+// ============================================================
 function toggleCategory(key, catDiv, forceOpen = false) {
     const subUl = document.querySelector(`.submenu[data-category="${key}"]`);
     if (!subUl) return;
@@ -114,23 +174,39 @@ function toggleCategory(key, catDiv, forceOpen = false) {
     }
 }
 
+function toggleSubcategory(categoryKey, subName, subCatDiv, forceOpen = false) {
+    const subSubUl = document.querySelector(`.sub-submenu[data-category="${categoryKey}"][data-subcategory="${subName}"]`);
+    if (!subSubUl) return;
+    const isOpen = subSubUl.classList.contains('open');
+    if (forceOpen && isOpen) return;
+    if (forceOpen || !isOpen) {
+        subSubUl.classList.add('open');
+        subCatDiv.classList.add('open');
+    } else {
+        subSubUl.classList.remove('open');
+        subCatDiv.classList.remove('open');
+    }
+}
+
 // ============================================================
-//  Navegação: mostrar categoria (lista de doenças)
+//  Navegação: mostrar subcategoria (lista de doenças)
 // ============================================================
-function showCategory(key) {
-    currentCategory = key;
+function showSubcategory(categoryKey, subName) {
+    currentCategory = categoryKey;
+    currentSubcategory = subName;
     currentDiseaseId = null;
-    const diseases = allDiseases[key] || [];
-    const cat = CATEGORIES[key];
-    if (!cat) return;
 
-    // Destacar item do menu
-    document.querySelectorAll('.submenu li').forEach(li => li.classList.remove('active'));
+    const diseases = allDiseases[categoryKey] || [];
+    const filtered = diseases.filter(d => d.subcategory === subName);
+    const catLabel = CATEGORIES[categoryKey]?.label || categoryKey;
 
-    let html = `<h2>${cat.label}</h2><ul style="list-style:none; padding:0;">`;
-    diseases.forEach(d => {
+    // Destacar itens do menu
+    document.querySelectorAll('.submenu li, .sub-submenu li').forEach(li => li.classList.remove('active'));
+
+    let html = `<h2>${catLabel} · ${subName}</h2><ul style="list-style:none; padding:0;">`;
+    filtered.forEach(d => {
         html += `<li style="padding:0.5rem 0; border-bottom:1px solid #f1f5f9; cursor:pointer;" 
-                       onclick="showDisease('${key}', ${JSON.stringify(d).replace(/"/g, '&quot;')})">
+                       onclick="showDisease('${categoryKey}', ${JSON.stringify(d).replace(/"/g, '&quot;')}, '${subName}')">
                     <strong>${d.scientific_name || d.name}</strong>
                     ${d.common_name ? `<span style="color:#64748b; font-size:0.9rem;"> · ${d.common_name}</span>` : ''}
                 </li>`;
@@ -142,15 +218,22 @@ function showCategory(key) {
 // ============================================================
 //  Mostrar ficha completa de uma doença
 // ============================================================
-function showDisease(categoryKey, disease) {
+function showDisease(categoryKey, disease, subcategoryName = null) {
     currentCategory = categoryKey;
+    currentSubcategory = subcategoryName;
     currentDiseaseId = disease.id || disease.scientific_name;
 
     // Destacar no menu
-    document.querySelectorAll('.submenu li').forEach(li => li.classList.remove('active'));
-    const menuItem = document.querySelector(`.submenu[data-category="${categoryKey}"] li[data-disease-id="${currentDiseaseId}"]`);
+    document.querySelectorAll('.submenu li, .sub-submenu li').forEach(li => li.classList.remove('active'));
+    let selector = `.sub-submenu[data-category="${categoryKey}"] li[data-disease-id="${currentDiseaseId}"]`;
+    if (!subcategoryName) {
+        // se não tem subcategoria, buscar no primeiro nível
+        selector = `.submenu[data-category="${categoryKey}"] li[data-disease-id="${currentDiseaseId}"]`;
+    }
+    const menuItem = document.querySelector(selector);
     if (menuItem) menuItem.classList.add('active');
 
+    // Montar ficha (mesmo código de antes)
     const fields = ['symptoms', 'signs', 'etiology', 'disease_cycle', 'epidemiology', 'management', 'references'];
     const labels = {
         symptoms: 'Symptoms',
@@ -190,12 +273,13 @@ function showDisease(categoryKey, disease) {
     mainContent.innerHTML = html;
 }
 
+// ============================================================
+//  Funções auxiliares (galeria, ícones, lightbox, busca)
+// ============================================================
 function buildImageGallery(categoryKey, disease) {
-    // Supõe que disease.images seja um array com nomes de arquivo (ex: ['alternaria_1.jpg', ...])
     if (!disease.images || !disease.images.length) {
         return '<p style="color:#94a3b8;">No images available.</p>';
     }
-    // Caminho base: images/categoria/
     const basePath = `images/${categoryKey}/`;
     return disease.images.map(img => `
         <img src="${basePath}${img}" alt="Imagem" class="thumb" 
@@ -204,9 +288,11 @@ function buildImageGallery(categoryKey, disease) {
     `).join('');
 }
 
-// ============================================================
-//  Lightbox
-// ============================================================
+function getIconHTML(iconPath) {
+    return `<img src="${iconPath}" alt="ícone" style="width:24px;height:24px;" onerror="this.style.display='none';">`;
+}
+
+// Lightbox
 function openLightbox(src) {
     const lb = document.getElementById('lightbox');
     const img = document.getElementById('lightboxImg');
@@ -216,31 +302,28 @@ function openLightbox(src) {
 function closeLightbox() {
     document.getElementById('lightbox').classList.remove('open');
 }
-// Fechar com ESC
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeLightbox();
 });
 
-// ============================================================
-//  Busca
-// ============================================================
+// Busca (mantida igual)
 searchInput.addEventListener('input', function(e) {
     const term = e.target.value.toLowerCase().trim();
     if (term === '') {
-        // Volta para a categoria atual ou home
-        if (currentCategory) showCategory(currentCategory);
-        else showHome();
+        if (currentCategory) {
+            if (currentSubcategory) showSubcategory(currentCategory, currentSubcategory);
+            else showCategory(currentCategory);
+        } else showHome();
         return;
     }
 
-    // Procurar em todas as doenças
     let results = [];
     for (const [key, diseases] of Object.entries(allDiseases)) {
         diseases.forEach(d => {
             const name = (d.scientific_name || '').toLowerCase();
             const common = (d.common_name || '').toLowerCase();
             if (name.includes(term) || common.includes(term)) {
-                results.push({ category: key, disease: d });
+                results.push({ category: key, disease: d, sub: d.subcategory || null });
             }
         });
     }
@@ -254,19 +337,17 @@ searchInput.addEventListener('input', function(e) {
     results.forEach(r => {
         const catLabel = CATEGORIES[r.category]?.label || r.category;
         html += `<li style="padding:0.6rem 0; border-bottom:1px solid #f1f5f9; cursor:pointer;" 
-                   onclick="showDisease('${r.category}', ${JSON.stringify(r.disease).replace(/"/g, '&quot;')})">
+                   onclick="showDisease('${r.category}', ${JSON.stringify(r.disease).replace(/"/g, '&quot;')}, '${r.sub || ''}')">
                     <strong>${r.disease.scientific_name || r.disease.name}</strong>
                     ${r.disease.common_name ? `<span style="color:#64748b;"> · ${r.disease.common_name}</span>` : ''}
-                    <span style="font-size:0.8rem; color:#94a3b8; display:block;">${catLabel}</span>
+                    <span style="font-size:0.8rem; color:#94a3b8; display:block;">${catLabel}${r.sub ? ' · ' + r.sub : ''}</span>
                 </li>`;
     });
     html += `</ul>`;
     mainContent.innerHTML = html;
 });
 
-// ============================================================
-//  Página inicial (home)
-// ============================================================
+// Home
 function showHome() {
     mainContent.innerHTML = `
         <div style="max-width:700px; margin: 0 auto; text-align: center; padding: 2rem 0;">
@@ -281,12 +362,35 @@ function showHome() {
     `;
 }
 
-// ============================================================
-//  Inicialização
-// ============================================================
-document.addEventListener('DOMContentLoaded', loadAllData);
+// Mostrar categoria (sem subcategoria)
+function showCategory(key) {
+    currentCategory = key;
+    currentSubcategory = null;
+    currentDiseaseId = null;
+    const diseases = allDiseases[key] || [];
+    const cat = CATEGORIES[key];
+    if (!cat) return;
 
-// Expor funções globalmente para uso no HTML (onclick)
+    document.querySelectorAll('.submenu li, .sub-submenu li').forEach(li => li.classList.remove('active'));
+
+    let html = `<h2>${cat.label}</h2><ul style="list-style:none; padding:0;">`;
+    diseases.forEach(d => {
+        html += `<li style="padding:0.5rem 0; border-bottom:1px solid #f1f5f9; cursor:pointer;" 
+                       onclick="showDisease('${key}', ${JSON.stringify(d).replace(/"/g, '&quot;')}, null)">
+                    <strong>${d.scientific_name || d.name}</strong>
+                    ${d.common_name ? `<span style="color:#64748b; font-size:0.9rem;"> · ${d.common_name}</span>` : ''}
+                </li>`;
+    });
+    html += `</ul>`;
+    mainContent.innerHTML = html;
+}
+
+// Expor funções globalmente
 window.showDisease = showDisease;
+window.showSubcategory = showSubcategory;
+window.showCategory = showCategory;
 window.openLightbox = openLightbox;
 window.closeLightbox = closeLightbox;
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', loadAllData);

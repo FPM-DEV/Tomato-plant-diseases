@@ -1,0 +1,81 @@
+[
+    {
+        "id": "blossom_end_rot",
+        "subcategory": "Nutritional Deficiencies",
+        "scientific_name": "Calcium deficiency",
+        "common_name": "Blossom-end rot",
+        "images": ["blossom_end_rot_1.jpg", "blossom_end_rot_2.jpg"],
+        "symptoms": [
+            "Mancha escura e afundada na base do fruto.",
+            "Lesão com aspecto de podridão seca.",
+            "Frutos maduros com mancha preta e coriácea."
+        ],
+        "etiology": "Deficiência de cálcio no fruto, geralmente por desequilíbrio hídrico.",
+        "management": [
+            "Manter umidade do solo constante.",
+            "Aplicação de cálcio via foliar (cloreto de cálcio).",
+            "Evitar excesso de nitrogênio e potássio."
+        ]
+    },
+    {
+        "id": "leaf_curl",
+        "subcategory": "Climate-related Disorders",
+        "scientific_name": "Heat stress",
+        "common_name": "Leaf curling",
+        "images": ["leaf_curl_1.jpg"],
+        "symptoms": [
+            "Folhas enroladas para cima, bordos secos.",
+            "Queda de flores e frutos pequenos."
+        ],
+        "management": [
+            "Irrigação frequente em dias quentes.",
+            "Uso de sombrite ou mulch para reduzir temperatura do solo."
+        ]
+    },
+    {
+        "id": "herbicide_damage",
+        "subcategory": "Pesticide Phytotoxicity",
+        "scientific_name": "2,4-D injury",
+        "common_name": "Herbicide drift",
+        "images": ["herbicide_damage_1.jpg"],
+        "symptoms": [
+            "Folhas com crescimento anormal (epinastia), enrugadas e estreitas.",
+            "Hastes tortas e frutos deformados."
+        ],
+        "management": [
+            "Evitar aplicação de herbicidas próximos ao tomateiro.",
+            "Não usar equipamentos contaminados."
+        ]
+    },
+    {
+        "id": "spider_mite",
+        "subcategory": "Insect and Mite Damage",
+        "scientific_name": "Tetranychus urticae",
+        "common_name": "Two-spotted spider mite",
+        "images": ["spider_mite_1.jpg"],
+        "symptoms": [
+            "Pontos amarelados nas folhas, teias finas na face inferior.",
+            "Folhas ficam bronzeadas e secam."
+        ],
+        "management": [
+            "Ácaros predadores (fitoseídeos).",
+            "Óleo de neem ou enxofre.",
+            "Manter umidade alta para reduzir proliferação."
+        ]
+    },
+    {
+        "id": "genetic_fruit_crack",
+        "subcategory": "Genetic or Unknown Disorders",
+        "scientific_name": "Fruit cracking (genetic)",
+        "common_name": "Concentric cracking",
+        "images": ["crack_1.jpg"],
+        "symptoms": [
+            "Rachaduras concêntricas na região peduncular do fruto.",
+            "Pode ocorrer em variedades suscetíveis."
+        ],
+        "management": [
+            "Escolher variedades resistentes.",
+            "Manter irrigação regular para evitar variação brusca de umidade."
+        ]
+    }
+]
